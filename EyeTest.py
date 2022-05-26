@@ -1,5 +1,6 @@
 import numpy as np
 import keras
+import h5py
 import tensorflow as tf
 from keras.models import Sequential
 from keras.callbacks import ModelCheckpoint
@@ -39,6 +40,7 @@ def DisplayRes(image_number, x_test, y_test, model):
     print("Original label is {} and predicted label is {}".format(original_label, predicted_label))
     plt.show()
 
+#get the path for the dataset
 data_path = 'dataset/train'
 
 directories = ['/Closed_Eyes', '/Open_Eyes']
@@ -46,6 +48,7 @@ directories = ['/Closed_Eyes', '/Open_Eyes']
 for j in directories:
     plot_imgs(data_path+j)
 '''
+#make the class for loading the dataset
 batch_size = 32
 train_datagen = ImageDataGenerator(horizontal_flip = True, 
                                   rescale = 1./255, 
@@ -56,6 +59,7 @@ test_datagen = ImageDataGenerator(rescale = 1./255)
 train_data_path = 'dataset/train'
 test_data_path = 'dataset/test'
 
+#load the dataset
 train_set = train_datagen.flow_from_directory(train_data_path, target_size = (64,64),
                                               batch_size = batch_size, 
                                               color_mode = 'grayscale',
@@ -67,7 +71,7 @@ test_set = test_datagen.flow_from_directory(test_data_path, target_size = (64,64
                                               class_mode = 'categorical')
 
 classes = 2
-
+#make the neutral network for the model
 model = Sequential()
 model.add(Conv2D(32, (3,3), padding = 'same', input_shape = (64,64,1), activation = 'relu'))
 model.add(MaxPooling2D(pool_size = (2,2)))
@@ -86,17 +90,20 @@ model.add(Dense(classes, activation = 'softmax'))
 
 print(model.summary())
 model.compile(loss = 'categorical_crossentropy',optimizer = 'adam' , metrics = ['accuracy'])
-model_path="yawn_detection.h5"
+model_path="eye_state.h5"
 
 checkpoint = ModelCheckpoint(model_path, monitor='val_accuracy', verbose=1, 
                               save_best_only=True, mode='max')
 
+#make vars to be used in fitting
 callbacks_list = [checkpoint]
 num_epochs = 20
 training_steps=train_set.n//train_set.batch_size
 validation_steps =test_set.n//test_set.batch_size
+#fit the model (compile)
 history = model.fit_generator(train_set, epochs=num_epochs, steps_per_epoch=training_steps,validation_data=test_set,
                     validation_steps=validation_steps, callbacks = callbacks_list)
+#show the results of the compiled model
 for x in range(0, 20):
     x, y_real = next(test_set)
     y_pred=np.argmax(model.predict(x))

@@ -21,18 +21,23 @@ def load_images_from_folder(folder):
 #load the saved model
 model=keras.models.load_model('eye_state.h5')
 #get the img
-img = cv2.imread('stelyo2.jpg')
+img = cv2.imread('stilkouch.jpg')
 plt.imshow(cv2.cvtColor(img,cv2.COLOR_BGR2RGB))
 #make the dface and eyes detectors
 faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_alt.xml')
 eyeCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+faces=faceCascade.detectMultiScale(gray, 1.1, 4)
+for (x, y, w, h) in faces:
+  gray = gray[y:y+int(h*0.6), x:x+w]
+  img = img[y:y+int(h*0.6), x:x+w]
+
 #get the first 2 instances of eyes
-eyes = eyeCascade.detectMultiScale(gray, 1.1, 4)
+eyes = eyeCascade.detectMultiScale(gray, 1.3, 6)
 #draw the eye borders and show it
 img2=img.copy()
 for (x, y, w, h) in eyes:
-  cv2.rectangle(img2, (x,y), (x+w, y+h), (0, 255, 0), 3)
+  cv2.rectangle(img2, (x,y), (x+w, y+h), (0, 255, 0), 2)
 plt.imshow(cv2.cvtColor(img2, cv2.COLOR_BGR2RGB))
 plt.show()
 eyeCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
@@ -53,21 +58,9 @@ for x, y,w, h in eyes:
       final_img = final_img/255.0
       label=np.argmax(model.predict(final_img))
       plt.imshow(cv2.cvtColor(eyes_roi, cv2.COLOR_BGR2RGB))
-      plt.imshow(np.squeeze(final_img))
+      #plt.imshow(np.squeeze(final_img))
       plt.title(label)
       #print("Original label is {} and predicted label is {}".format(y_real, y_pred))
       print("predicted label is " +str(label))
       plt.show()
-images=load_images_from_folder("random_img")
-for x in images:
-  final_img = cv2.resize(x, (64,64))
-  final_img=cv2.cvtColor(final_img, cv2.COLOR_BGR2GRAY)
-  final_img = np.expand_dims(final_img, axis=0)
-  final_img = final_img/255.0
-  label=np.argmax(model.predict(final_img))
-  plt.imshow(np.squeeze(final_img))
-  plt.title(label)
-  #print("Original label is {} and predicted label is {}".format(y_real, y_pred))
-  print("predicted label is " +str(label))
-  plt.show()
 

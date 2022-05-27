@@ -21,7 +21,7 @@ def load_images_from_folder(folder):
 #load the saved model
 model=keras.models.load_model('eye_state.h5')
 #get the img
-img = cv2.imread('stilkouch.jpg')
+img = cv2.imread('stelyo2.jpg')
 plt.imshow(cv2.cvtColor(img,cv2.COLOR_BGR2RGB))
 #make the dface and eyes detectors
 faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_alt.xml')
@@ -44,20 +44,21 @@ eyeCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml'
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 eyes = eyeCascade.detectMultiScale(gray, 1.1, 4)
 for x, y,w, h in eyes:
-  roi_gray = gray[y:y+h, x:x+w]
-  roi_color = img[y:y+h, x:x+w]
+  print(x, y, w, h)
+  roi_gray = gray[int(y*0.8):y+int(h*1.1), int(x*1):x+int(w*1.1)]
+  roi_color = img[int(y*0.8):y+int(h*1.1), int(x*1):x+int(w*1.1)]
   eyess = eyeCascade.detectMultiScale(roi_gray)
   if len(eyess) == 0:
     print("eyes not detected")
   else:
     for ex, ey, ew, eh in eyess :
-      eyes_roi = roi_color[ey:ey+eh, ex:ex+ew]
+      eyes_roi = roi_color
       final_img = cv2.resize(eyes_roi, (64,64))
       final_img=cv2.cvtColor(final_img, cv2.COLOR_BGR2GRAY)
       final_img = np.expand_dims(final_img, axis=0)
       final_img = final_img/255.0
       label=np.argmax(model.predict(final_img))
-      plt.imshow(cv2.cvtColor(eyes_roi, cv2.COLOR_BGR2RGB))
+      plt.imshow(cv2.cvtColor(roi_color, cv2.COLOR_BGR2RGB))
       #plt.imshow(np.squeeze(final_img))
       plt.title(label)
       #print("Original label is {} and predicted label is {}".format(y_real, y_pred))

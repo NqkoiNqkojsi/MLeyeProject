@@ -1,5 +1,2 @@
 # MLeyeProject
-result of predictions
-for now:
-1-eye open
-3, 5, 7 or anything other - closed
+A Machine Learning project which goal is to keep people awake. Anytime the user is supected of falling asleep from the algorithm, they get tazed, as to give him the needed energy to continue with their task.

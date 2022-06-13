@@ -2,10 +2,6 @@ import numpy as np
 import keras
 import cv2
 import tensorflow as tf
-from keras.models import Sequential
-from keras.callbacks import ModelCheckpoint
-from keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropout
-from keras.preprocessing.image import ImageDataGenerator
 import matplotlib.pyplot as plt
 import os
 
@@ -21,7 +17,7 @@ result=["closed eye", "open eye"]
 #load the saved model
 model=keras.models.load_model('eye_state.h5')
 #get the img
-img = cv2.imread('test_img/miro.jpg')
+img = cv2.imread('test_img/stelyo3.jpg')
 plt.imshow(cv2.cvtColor(img,cv2.COLOR_BGR2RGB))
 #make the dface and eyes detectors
 faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_alt.xml')

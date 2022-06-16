@@ -2,10 +2,6 @@ import numpy as np
 import keras
 import cv2
 import tensorflow as tf
-from keras.models import Sequential
-from keras.callbacks import ModelCheckpoint
-from keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropout
-from keras.preprocessing.image import ImageDataGenerator
 import matplotlib.pyplot as plt
 import os
 
@@ -18,6 +14,7 @@ def load_images_from_folder(folder):
     return images
 
 model=keras.models.load_model('eye_state.h5')
+
 def picture_anal(img):
   result=["closed eye", "open eye"]
   #load the saved model
@@ -33,7 +30,6 @@ def picture_anal(img):
   for (x, y, w, h) in faces:
     gray = gray[y:y+int(h*0.6), x:x+w]
     img = img[y:y+int(h*0.6), x:x+w]
-
   #get the first 2 instances of eyes
   eyes = eyeCascade.detectMultiScale(gray, 1.3, 6)
   #draw the eye borders and show it

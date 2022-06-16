@@ -60,7 +60,7 @@ def picture_anal(img):
         final_img = np.expand_dims(final_img, axis=0)
         final_img = final_img/255.0
         label=result[np.argmax(model.predict(final_img))]
-        plt.imshow(np.squeeze(final_img))
+        
         plt.title(label)
         #print("Original label is {} and predicted label is {}".format(y_real, y_pred))
         print("predicted label is " +str(label))

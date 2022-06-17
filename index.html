@@ -1,15 +1,71 @@
 <!DOCTYPE html>
-    <head>
+    
+<head>
         <title>Index</title>
+        <meta charset="utf-8">
+        <style>
+            .container {
+                margin: 30px;
+            }
+            .containerContent {
+                display: block;
+                width: 600px;
+                margin: auto;
+            }
+            .containerLiveFeed {
+                width: 500px;
+                height: 375px;
+                border: 10px #333 solid;
+            }
+            #videoElement {
+                width: 500px;
+                height: 375px;
+                background-color: #666;
+            }
+        </style>
     </head>
+    
     <body>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8  offset-lg-2">
-                    <h3 class="mt-5">Live Streaming</h3>
-                    <img src="{{ url_for('video_feed') }}" width="100%">
-                </div>
+        <div class="containerContent">
+            <div class="container containerHeader">
+                <h1>Hustle Watch<span>&#8482;</span> User Interface</h1>
             </div>
+            
+            <div class="container containerLiveFeed">
+                <video autoplay="true" id="videoElement"></video>
+            </div>
+
+            <div class="container containerSettings">
+                <form action="ServerTest.py" method="POST">
+                    <div>
+                        <label for="user_IP">Enter your IP:</label>
+                        <input type="text" id="user_IP" name="user_IP">
+                    </div>
+                    <div>
+                        <input type="radio" id="taze" name="settings" value="taze" checked="checked">
+                        <label for="taze">Taze</label>
+                        <input type="radio" id="vibrate" name="settings" value="vibrate">
+                        <label for="vibrate">Vibrate</label>
+                    </div>
+                    <div>
+                        <input type="submit" value="Start">
+                    </div>
+                </form>
+            </div>
+
+            <script>
+                var video = document.querySelector("#videoElement");
+
+                if (navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function (stream) {
+                    video.srcObject = stream;
+                    })
+                    .catch(function (err0r) {
+                    console.log("Something went wrong!");
+                    });
+                }
+            </script>
         </div>
     </body>
 </html>

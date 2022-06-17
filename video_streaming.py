@@ -4,7 +4,7 @@ import FaceTest as fc
 import time
 import requests
 
-ip="http://192.168.1.10:5000"
+ip="192.168.1.10:5000"
 
 def Stream():
     # define a video capture object
@@ -39,9 +39,9 @@ def Main_Run(mode):
         state[10]=Stream()
         if state.count(0)>7:
             if mode==0:
-                r = requests.get(str(ip+"/taze"), auth=('user', 'pass'))
+                r = requests.get(str("http://"+ip+"/taze"), auth=('user', 'pass'))
             else:
-                r = requests.get(str(ip+"/vibrate"), auth=('user', 'pass'))
+                r = requests.get(str("http://"+ip+"/vibrate"), auth=('user', 'pass'))
             time.sleep(0.5)
 
 def Test_run(mode):
@@ -54,8 +54,8 @@ def Test_run(mode):
         state[10]=fc.picture_anal(cv2.imread('test_img/stelyo2.jpg'))
         if state.count(0)>7:
             if mode==0:
-                r = requests.get(str(ip+"/taze"), auth=('user', 'pass'))
+                r = requests.get(str("http://"+ip+"/taze"), auth=('user', 'pass'))
             else:
-                r = requests.get(str(ip+"/vibrate"), auth=('user', 'pass'))
+                r = requests.get(str("http://"+ip+"/vibrate"), auth=('user', 'pass'))
         time.sleep(0.5)
-Test_run(1)
+#Test_run(1)

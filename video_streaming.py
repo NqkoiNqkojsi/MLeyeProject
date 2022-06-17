@@ -1,4 +1,5 @@
 # import the opencv library
+import asyncio
 import cv2
 import FaceTest as fc
 import time
@@ -18,31 +19,29 @@ def Setup():
     global isActive
     isActive=False
 
-isActive=False
-def ControlVideo(mode):
-    isActive=not isActive
-    if isActive:
-        Main_Run(mode)
-        return True
-    return False
+
 
 def SetIp(ipAddr):
     ip=ipAddr
 
-def Main_Run(mode):
+async def Main_Run(mode, ip):
+    print("ip="+ip)
     isActive=True
     iter=0
     state=[1,1,1,1,1,1,1,1,1,1,1]
-    while(isActive):
+    while(True):
         for x in range(0, 10):
             state[x]=state[x+1]
         state[10]=Stream()
         if state.count(0)>7:
-            if mode==0:
-                r = requests.get(str("http://"+ip+"/taze"), auth=('user', 'pass'))
-            else:
-                r = requests.get(str("http://"+ip+"/vibrate"), auth=('user', 'pass'))
-            time.sleep(0.5)
+            try:
+                if mode==0:
+                    r = requests.get(str("http://"+ip+"/taze"), auth=('user', 'pass'))
+                else:
+                    r = requests.get(str("http://"+ip+"/vibrate"), auth=('user', 'pass'))
+                await asyncio.sleep(0.5)
+            except:
+                return
 
 def Test_run(mode):
     isActive=True

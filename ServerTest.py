@@ -1,14 +1,15 @@
 #Import necessary libraries
-from flask import Flask, render_template, Response, make_response
+import asyncio
+from flask import Flask, render_template, Response, make_response, request, url_for, flash, redirect
+import aiohttp
 import video_streaming as vst
 import cv2
 #Initialize the Flask app
-app = Flask(__name__)
+app = Flask(__name__, template_folder='template')
 camera = cv2.VideoCapture(0)
-'''
-for ip camera use - rtsp://username:password@ip_address:554/user=username_password='password'_channel=channel_number_stream=0.sdp' 
-for local webcam use cv2.VideoCapture(0)
-'''
+async def StartVideo(mode, ip):
+    task = asyncio.create_task(vst.Main_Run(mode, ip))
+    await task
 def gen_frames():  
     while True:
         success, frame = camera.read()  # read the camera frame
@@ -24,7 +25,7 @@ def index():
     return render_template('index.html')
 @app.route('/video_feed')
 def video_feed():
-    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(gen_frames())
 '''
 @app.route('/result')
 def result():
@@ -32,15 +33,25 @@ def result():
     response.mimetype="text/plain"
     return response
 '''
+@app.route('/video', methods=['post', 'get'])
+def video():
+    message = ''
+    if request.method == 'POST':
+        pass
+    return render_template('index.html', message=message)
+
+
 @app.route('/index', methods=['post', 'get'])
-def settings():
+def idx():
     message = ''
     if request.method == 'POST':
         user_IP = request.form.get('user_IP')
+        vst.SetIp(user_IP)
         set_action = request.form.get('settings')
-
+        asyncio.run(StartVideo(set_action, user_IP))
+        print(str(user_IP)+"; "+str(set_action))
     return render_template('index.html', message=message)
-    
+
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0") 
+    app.run(debug=True) 

@@ -32,5 +32,15 @@ def result():
     response.mimetype="text/plain"
     return response
 '''
+@app.route('/index', methods=['post', 'get'])
+def settings():
+    message = ''
+    if request.method == 'POST':
+        user_IP = request.form.get('user_IP')
+        set_action = request.form.get('settings')
+
+    return render_template('index.html', message=message)
+    
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0") 

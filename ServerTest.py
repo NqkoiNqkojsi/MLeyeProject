@@ -30,7 +30,6 @@ def result():
     response=make_response(str(vst.Stream()),200)
     response.mimetype="text/plain"
     return response
-def result():
     
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0") 

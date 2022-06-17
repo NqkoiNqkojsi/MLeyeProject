@@ -16,17 +16,13 @@ def load_images_from_folder(folder):
 model=keras.models.load_model('eye_state.h5')
 
 def picture_anal(img):
-  result=["closed eye", "open eye"]
-  #load the saved model
- 
-  
-  
-  
   #make the dface and eyes detectors
   faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_alt.xml')
   eyeCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
   gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
   faces=faceCascade.detectMultiScale(gray, 1.1, 4)
+  if len(faces)<1:
+    return 0
   for (x, y, w, h) in faces:
     gray = gray[y:y+int(h*0.6), x:x+w]
     img = img[y:y+int(h*0.6), x:x+w]
@@ -34,6 +30,8 @@ def picture_anal(img):
   eyes = eyeCascade.detectMultiScale(gray, 1.3, 6)
   #draw the eye borders and show it
   img2=img.copy()
+  if len(faces)<1:
+    return 0
   for (x, y, w, h) in eyes:
     cv2.rectangle(img2, (x,y), (x+w, y+h), (0, 255, 0), 2)
   plt.imshow(cv2.cvtColor(img2, cv2.COLOR_BGR2RGB))
@@ -55,16 +53,7 @@ def picture_anal(img):
         final_img=cv2.cvtColor(final_img, cv2.COLOR_BGR2GRAY)
         final_img = np.expand_dims(final_img, axis=0)
         final_img = final_img/255.0
-        label=result[np.argmax(model.predict(final_img))]
-        
-        plt.title(label)
-        #print("Original label is {} and predicted label is {}".format(y_real, y_pred))
-        print("predicted label is " +str(label))
-        plt.show()
-        plt.imshow(cv2.cvtColor(roi_color, cv2.COLOR_BGR2RGB))
-        #plt.imshow(np.squeeze(final_img))
-        plt.title(label)
-        #print("Original label is {} and predicted label is {}".format(y_real, y_pred))
-        print("predicted label is " +str(label))
-        plt.show()
+        if np.argmax(model.predict(final_img))==0:#0 is closed eyes, 1 is open
+          return 0
+  return 1
 

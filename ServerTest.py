@@ -1,5 +1,6 @@
 #Import necessary libraries
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, make_response
+import video_streaming as vst
 import cv2
 #Initialize the Flask app
 app = Flask(__name__)
@@ -24,5 +25,12 @@ def index():
 @app.route('/video_feed')
 def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+@app.route('/result')
+def result():
+    response=make_response(str(vst.Stream()),200)
+    response.mimetype="text/plain"
+    return response
+def result():
+    
 if __name__ == "__main__":
-    app.run(debug=True) 
+    app.run(debug=True, host="0.0.0.0") 

@@ -1,21 +1,61 @@
-
 # import the opencv library
 import cv2
 import FaceTest as fc
-#def Is_Active():
+import time
+import requests
+
+ip="192.168.1.10:5000"
+
 def Stream():
     # define a video capture object
     vid = cv2.VideoCapture(0)
-  
     while(True):
-      
-        # Capture the video frame
-        # by frame
         ret, frame = vid.read()
-        # Display the resulting frame
         return fc.picture_anal(frame)
-      
-    # After the loop release the cap object
-    vid.release()
-    # Destroy all the windows
-    cv2.destroyAllWindows()
+
+
+def Setup():
+    global isActive
+    isActive=False
+
+isActive=False
+def ControlVideo(mode):
+    isActive=not isActive
+    if isActive:
+        Main_Run(mode)
+        return True
+    return False
+
+def SetIp(ipAddr):
+    ip=ipAddr
+
+def Main_Run(mode):
+    isActive=True
+    iter=0
+    state=[1,1,1,1,1,1,1,1,1,1,1]
+    while(isActive):
+        for x in range(0, 10):
+            state[x]=state[x+1]
+        state[10]=Stream()
+        if state.count(0)>7:
+            if mode==0:
+                r = requests.get(str("http://"+ip+"/taze"), auth=('user', 'pass'))
+            else:
+                r = requests.get(str("http://"+ip+"/vibrate"), auth=('user', 'pass'))
+            time.sleep(0.5)
+
+def Test_run(mode):
+    isActive=True
+    iter=0
+    state=[1,1,1,1,1,1,1,1,1,1,1]
+    while(isActive):
+        for x in range(0, 10):
+            state[x]=state[x+1]
+        state[10]=fc.picture_anal(cv2.imread('test_img/stelyo2.jpg'))
+        if state.count(0)>7:
+            if mode==0:
+                r = requests.get(str("http://"+ip+"/taze"), auth=('user', 'pass'))
+            else:
+                r = requests.get(str("http://"+ip+"/vibrate"), auth=('user', 'pass'))
+        time.sleep(0.5)
+#Test_run(1)

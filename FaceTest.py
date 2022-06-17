@@ -34,8 +34,6 @@ def picture_anal(img):
     return 0
   for (x, y, w, h) in eyes:
     cv2.rectangle(img2, (x,y), (x+w, y+h), (0, 255, 0), 2)
-  plt.imshow(cv2.cvtColor(img2, cv2.COLOR_BGR2RGB))
-  plt.show()
   eyeCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
   gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
   eyes = eyeCascade.detectMultiScale(gray, 1.1, 4)

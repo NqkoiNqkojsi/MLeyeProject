@@ -1,11 +1,10 @@
-
 # import the opencv library
 import cv2
 import FaceTest as fc
 import time
 import requests
-#def Is_Active():
-ip="http://192.168.1.8:5000"
+
+ip="http://192.168.1.10:5000"
 
 def Stream():
     # define a video capture object
@@ -15,9 +14,20 @@ def Stream():
         return fc.picture_anal(frame)
 
 
-isActive=True
-def StopVideo():
+def Setup():
+    global isActive
     isActive=False
+
+isActive=False
+def ControlVideo(mode):
+    isActive=not isActive
+    if isActive:
+        Main_Run(mode)
+        return True
+    return False
+
+def SetIp(ipAddr):
+    ip=ipAddr
 
 def Main_Run(mode):
     isActive=True
@@ -33,3 +43,19 @@ def Main_Run(mode):
             else:
                 r = requests.get(str(ip+"/vibrate"), auth=('user', 'pass'))
             time.sleep(0.5)
+
+def Test_run(mode):
+    isActive=True
+    iter=0
+    state=[1,1,1,1,1,1,1,1,1,1,1]
+    while(isActive):
+        for x in range(0, 10):
+            state[x]=state[x+1]
+        state[10]=fc.picture_anal(cv2.imread('test_img/stelyo2.jpg'))
+        if state.count(0)>7:
+            if mode==0:
+                r = requests.get(str(ip+"/taze"), auth=('user', 'pass'))
+            else:
+                r = requests.get(str(ip+"/vibrate"), auth=('user', 'pass'))
+        time.sleep(0.5)
+Test_run(1)

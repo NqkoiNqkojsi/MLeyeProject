@@ -1,20 +1,24 @@
 import tkinter
 import video_streaming as vst
-isRunning=False
+vst.Setup()
 label1="Start"
-taze = tkinter.IntVar(1)
-vibr = tkinter.IntVar(0)
+m = tkinter.Tk()
+taze = tkinter.IntVar()
+vibr = tkinter.IntVar()
 def StartStopVideo():
-    isRunning=not isRunning
+    isRunning=vst.ControlVideo(vibr.get())
     if isRunning==True:
         label1="Stop"
-        vst.Main_Run(vibr.get())
     else:
         label1="Start"
-        vst.isActive()
-        
 
-m = tkinter.Tk()
+
+label2=tkinter.Label(m, text='IP')
+e1 = tkinter.Entry(m)
+label2.pack()
+e1.pack()
+but = tkinter.Button(m, text="Set", width=10, command=vst.SetIp(e1.get()))
+but.pack()
 w = tkinter.Canvas(m, width=1280, height=780)
 w.pack()
 button = tkinter.Button(m, text=label1, width=25, command=StartStopVideo())

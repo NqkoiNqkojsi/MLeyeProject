@@ -63,4 +63,5 @@ def Test_run(mode):
             else:
                 r = requests.get(str("http://"+ip+"/vibrate"), auth=('user', 'pass'))
         time.sleep(0.5)
-Main_Run(1,ip)
+if __name__ == "__main__":
+    Main_Run(1,ip)

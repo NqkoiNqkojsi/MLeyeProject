@@ -19,9 +19,15 @@ def picture_anal(img):
   #make the dface and eyes detectors
   faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_alt.xml')
   eyeCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
-  gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+  try:
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+  except:
+    print("color problem")
+    return 0
   faces=faceCascade.detectMultiScale(gray, 1.1, 4)
+  print("number of faces = "+str(len(faces)))
   if len(faces)<1:
+    print("no face detected")
     return 0
   for (x, y, w, h) in faces:
     gray = gray[y:y+int(h*0.6), x:x+w]
@@ -30,20 +36,24 @@ def picture_anal(img):
   eyes = eyeCascade.detectMultiScale(gray, 1.3, 6)
   #draw the eye borders and show it
   img2=img.copy()
-  if len(faces)<1:
+  print("number of eyes = "+str(len(eyes)))
+  if len(eyes)<1:
+    print("no eyes detected")
     return 0
   for (x, y, w, h) in eyes:
     cv2.rectangle(img2, (x,y), (x+w, y+h), (0, 255, 0), 2)
+  cv2.imshow('img2', img2)
+  cv2.waitKey(1)
   eyeCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
   gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
   eyes = eyeCascade.detectMultiScale(gray, 1.1, 4)
   for x, y,w, h in eyes:
-    print(x, y, w, h)
     roi_gray = gray[int(y*0.8):y+int(h*1.1), int(x*1):x+int(w*1.2)]
     roi_color = img[int(y*0.8):y+int(h*1.1), int(x*1):x+int(w*1.2)]
     eyess = eyeCascade.detectMultiScale(roi_gray)
     if len(eyess) == 0:
       print("eyes not detected")
+      return 0
     else:
       for ex, ey, ew, eh in eyess :
         eyes_roi = roi_color
@@ -52,6 +62,8 @@ def picture_anal(img):
         final_img = np.expand_dims(final_img, axis=0)
         final_img = final_img/255.0
         if np.argmax(model.predict(final_img))==0:#0 is closed eyes, 1 is open
+          print("found closed eye")
           return 0
+  print("all eyes are open")
   return 1
 

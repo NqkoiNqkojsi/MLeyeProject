@@ -72,6 +72,27 @@ class PackageState:
         self.ip=ip
         self.mode=mode
     img=base64.b64encode(cv2.imread('test_img/empty.jpg'))
+    ENCODING = 'utf-8'
+
+    def MakeImageJson(self):
+        base64_bytes = base64.b64encode(self.img)
+
+        # third: decode these bytes to text
+        # result: string (in utf-8)
+        base64_string = base64_bytes.decode(self.ENCODING)
+        return base64_string
+
+    def ReturnDic(self):
+        return {
+        "state": self.state,
+        "isAsleep": self.isAsleep,
+        "ip": self.ip,
+        "mode":self.mode,
+        "img":self.MakeImageJson()
+        }
+    
+    
+
 
 def Site_Oriented(pack):
     print("ip="+pack.ip)
@@ -90,9 +111,10 @@ def Site_Oriented(pack):
                 r = requests.get(str("http://"+pack.ip+"/taze"), auth=('user', 'pass'))
             else:
                 r = requests.get(str("http://"+pack.ip+"/vibrate"), auth=('user', 'pass'))
-            time.sleep(1)
+            #time.sleep(1)
         except:
-            time.sleep(1) 
+            #time.sleep(1) 
+            pass
     return pack 
         
 if __name__ == "__main__":

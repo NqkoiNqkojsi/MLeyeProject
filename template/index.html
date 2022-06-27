@@ -3,7 +3,7 @@
 <head>
         <title>Index</title>
         <meta charset="utf-8">
-        <script src="jquery-3.6.0.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <style>
             .container {
                 margin: 30px;
@@ -36,6 +36,13 @@
                 margin-left: 17%;
                 width: 60%;
             }
+            .button:hover {background-color: #3e8e41}
+
+            .button:active {
+            background-color: #3e8e41;
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+            }
         </style>
     </head>
     
@@ -51,7 +58,7 @@
             <h2 id="Msg"></h2>
             <div class="container containerSettings">
                 <form action="/index" method="post">
-                    <input type="submit" class="button" id="Video" value="Start">
+                    <button type="button" onclick="ButtonPress()" class="button" id="Video">Start</button>
                     <div>
                         <label for="user_IP">Enter your IP:</label>
                         <input type="text" id="user_IP" name="user_IP" required>
@@ -77,8 +84,11 @@
                     console.log("Something went wrong!");
                     });
                 }
+                function sleep(ms) {
+                    return new Promise(resolve => setTimeout(resolve, ms));
+                }
 
-                obj={"id":"192.168.1.10:5000", "mode":1, "state":null, "isAsleep":false, "img":null};
+                obj={"state":[1,1,1,1,1,1,1,1], "isAsleep":false, "ip":"192.168.1.10:5000", "mode":1, "img":""};
 
                 function ButtonPress() {
                     button=document.getElementById("Video");
@@ -87,22 +97,46 @@
                         GenerateImg();
                     }else{
                         button.innerHTML="Start";
+                        $("#VideoElement").attr("src", "../test_img/empty.jpg")
                     }
                 }
 
-                function GenerateImg() {
+                async function GenImage() {
                     button=document.getElementById("Video")
                     while(button.innerHTML=="Stop"){
                         button=document.getElementById("Video")
                         $.post("http://127.0.0.1:5000/start_feed", obj,
                         function(data, status){
                             obj=JSON.parse(data);
-                            $("#VideoElement").attr("src", "data:image/png;base64,"+obj.img);
+                            //$("#VideoElement").attr("src", "data:image/png;base64,"+obj["img"]);
                         });
+                        await sleep(10*1000)
                     }
                 }
 
-                
+                async function GenerateImg(){
+                    button=document.getElementById("Video")
+                    while(button.innerHTML=="Stop"){
+                        button=document.getElementById("Video")
+                        $.ajax({
+                            type: "POST",
+                            url: "http://127.0.0.1:5000/start_feed",
+                            // The key needs to match your method's input parameter (case-sensitive).
+                            data: JSON.stringify(obj),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function(data){
+                                console.log(data);
+                                obj=JSON.parse(data);
+                                $("#VideoElement").attr("src", "data:image/png;base64,"+obj["img"]);
+                            },
+                            error: function(errMsg) {
+                                alert(errMsg);
+                            }
+                        });
+                        await sleep(10*1000)
+                    }
+                }   
             </script>
         </div>
     </body>

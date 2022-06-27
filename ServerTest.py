@@ -1,6 +1,6 @@
 #Import necessary libraries
 import asyncio
-from flask import Flask, render_template, Response, make_response, request, url_for, flash, redirect
+from flask import Flask, render_template, Response, make_response, request, url_for, flash, redirect, jsonify
 import aiohttp
 import video_streaming as vst
 import cv2
@@ -38,12 +38,12 @@ def ReturnInfo(pack):
 @app.route('/')
 def index():
     return render_template('index.html')
-@app.route('/video_feed', methods=['POST'])
-def video_feed():
+@app.route('/start_feed', methods=['POST'])
+def start_feed():
     data=request.json
     print(data)
-    #pack=vst.PackageState()
-    return Response(gen_frames(data))
+    pack=vst.PackageState(data["state"], data["isAsleep"], data["ip"], data["mode"])
+    return jsonify(ReturnInfo(pack).ReturnDic())
 '''
 @app.route('/result')
 def result():

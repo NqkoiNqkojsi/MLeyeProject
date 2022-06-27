@@ -4,25 +4,46 @@ from flask import Flask, render_template, Response, make_response, request, url_
 import aiohttp
 import video_streaming as vst
 import cv2
+import base64
+
 #Initialize the Flask app
 app = Flask(__name__, template_folder='template')
 camera = cv2.VideoCapture(0)
-def gen_frames():  
-    while True:
-        success, frame = camera.read()  # read the camera frame
-        if not success:
-            break
-        else:
-            ret, buffer = cv2.imencode('.jpg', frame)
-            frame = buffer.tobytes()
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
+
+
+def gen_frames(pack):
+      
+    success, frame = camera.read()  # read the camera frame
+    if not success:
+        img=cv2.imread('test_img/empty.jpg')
+        yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + img + b'\r\n')
+    else:
+        ret, buffer = cv2.imencode('.jpg', frame)
+        frame = buffer.tobytes()
+        yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
+
+def ReturnInfo(pack): 
+    success, frame = camera.read()  # read the camera frame
+    if not success:
+        return vst.Site_Oriented(pack)
+    else:
+        ret, buffer = cv2.imencode('.jpg', frame)
+        frame = buffer.tobytes()
+        pack.img=base64.b64encode(frame)
+        return vst.Site_Oriented(pack)
+        
+
 @app.route('/')
 def index():
     return render_template('index.html')
-@app.route('/video_feed')
+@app.route('/video_feed', methods=['POST'])
 def video_feed():
-    return Response(gen_frames())
+    data=request.json
+    print(data)
+    #pack=vst.PackageState()
+    return Response(gen_frames(data))
 '''
 @app.route('/result')
 def result():

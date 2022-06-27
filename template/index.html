@@ -3,6 +3,7 @@
 <head>
         <title>Index</title>
         <meta charset="utf-8">
+        <script src="jquery-3.6.0.min.js"></script>
         <style>
             .container {
                 margin: 30px;
@@ -45,9 +46,9 @@
             </div>
             
             <div class="container containerLiveFeed">
-                <img src="../test_img/empty.jpg" width="100%">
+                <img id="VideoElement" src="../test_img/empty.jpg" width="100%">
             </div>
-
+            <h2 id="Msg"></h2>
             <div class="container containerSettings">
                 <form action="/index" method="post">
                     <input type="submit" class="button" id="Video" value="Start">
@@ -76,6 +77,31 @@
                     console.log("Something went wrong!");
                     });
                 }
+
+                obj={"id":"192.168.1.10:5000", "mode":1, "state":null, "isAsleep":false, "img":null};
+
+                function ButtonPress() {
+                    button=document.getElementById("Video");
+                    if(button.innerHTML=="Start"){
+                        button.innerHTML="Stop";
+                        GenerateImg();
+                    }else{
+                        button.innerHTML="Start";
+                    }
+                }
+
+                function GenerateImg() {
+                    button=document.getElementById("Video")
+                    while(button.innerHTML=="Stop"){
+                        button=document.getElementById("Video")
+                        $.post("http://127.0.0.1:5000/start_feed", obj,
+                        function(data, status){
+                            obj=JSON.parse(data);
+                            $("#VideoElement").attr("src", "data:image/png;base64,"+obj.img);
+                        });
+                    }
+                }
+
                 
             </script>
         </div>

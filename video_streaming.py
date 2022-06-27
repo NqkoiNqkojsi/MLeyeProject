@@ -4,6 +4,7 @@ import cv2
 import FaceTest as fc
 import time
 import requests
+import base64
  
 ip="192.168.1.10:5000"
  
@@ -64,5 +65,35 @@ def Test_run(mode):
                 r = requests.get(str("http://"+ip+"/vibrate"), auth=('user', 'pass'))
         time.sleep(0.5)
 
+class PackageState:
+    def __init__(self, state, isAsleep, ip, mode):
+        self.state = state
+        self.isAsleep = isAsleep
+        self.ip=ip
+        self.mode=mode
+    img=base64.b64encode(cv2.imread('test_img/empty.jpg'))
+
+def Site_Oriented(pack):
+    print("ip="+pack.ip)
+    for x in range(0, 7):
+        pack.state[x]=pack.state[x+1]
+    pack.state[7]=fc.picture_anal(pack.img)
+    print(pack.state)
+    if pack.isAsleep==True and pack.state[7]==1:
+        pack.state=[0,0,0,1,1,1,1,1]
+        pack.isAsleep=False
+        return pack.state
+    if pack.state.count(0)>4:
+        pack.isAsleep=True
+        try:
+            if pack.mode==0:
+                r = requests.get(str("http://"+pack.ip+"/taze"), auth=('user', 'pass'))
+            else:
+                r = requests.get(str("http://"+pack.ip+"/vibrate"), auth=('user', 'pass'))
+            time.sleep(1)
+        except:
+            time.sleep(1) 
+    return pack 
+        
 if __name__ == "__main__":
     Main_Run(1,ip)

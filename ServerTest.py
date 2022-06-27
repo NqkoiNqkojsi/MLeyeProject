@@ -25,14 +25,10 @@ def gen_frames(pack):
                 b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
 
 def ReturnInfo(pack): 
-    success, frame = camera.read()  # read the camera frame
-    if not success:
-        return vst.Site_Oriented(pack)
-    else:
-        ret, buffer = cv2.imencode('.jpg', frame)
-        frame = buffer.tobytes()
-        pack.img=base64.b64encode(frame)
-        return vst.Site_Oriented(pack)
+    vid = cv2.VideoCapture(0)
+    ret, frame = vid.read()  # read the camera frame
+    pack.img=frame
+    return vst.Site_Oriented(pack)
         
 
 @app.route('/')
@@ -41,7 +37,6 @@ def index():
 @app.route('/start_feed', methods=['POST'])
 def start_feed():
     data=request.json
-    print(data)
     pack=vst.PackageState(data["state"], data["isAsleep"], data["ip"], data["mode"])
     return jsonify(ReturnInfo(pack).ReturnDic())
 '''

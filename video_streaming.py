@@ -71,10 +71,11 @@ class PackageState:
         self.isAsleep = isAsleep
         self.ip=ip
         self.mode=mode
-    img=base64.b64encode(cv2.imread('test_img/empty.jpg'))
+    img=cv2.imread('test_img/empty.jpg')
     ENCODING = 'utf-8'
 
     def MakeImageJson(self):
+        
         base64_bytes = base64.b64encode(self.img)
 
         # third: decode these bytes to text

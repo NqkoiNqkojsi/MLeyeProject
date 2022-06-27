@@ -47,6 +47,7 @@
             <div class="container containerLiveFeed">
                 <img src="{{ url_for('video_feed') }}" width="100%">
             </div>
+            <h2 id="Msg"></h2>
 
             <div class="container containerSettings">
                 <form action="/index2" method="post">
@@ -75,6 +76,14 @@
                     .catch(function (err0r) {
                     console.log("Something went wrong!");
                     });
+                }
+                function showHint(str) {
+                    const xmlhttp = new XMLHttpRequest();
+                    mlhttp.onload = function() {
+                        document.getElementById("Msg").innerHTML = this.responseText;
+                    }
+                    xmlhttp.open("GET", "http://127.0.0.1:5000/start_feed" + str);
+                    xmlhttp.send();
                 }
                 
             </script>

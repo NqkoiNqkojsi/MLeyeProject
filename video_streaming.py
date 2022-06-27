@@ -57,4 +57,6 @@ def Test_run(mode):
             else:
                 r = requests.get(str("http://"+ip+"/vibrate"), auth=('user', 'pass'))
         time.sleep(0.5)
-#Test_run(1)
+
+if __name__ == "__main__":
+    asyncio.create_task(Main_Run(1,ip))

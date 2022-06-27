@@ -7,9 +7,6 @@ import cv2
 #Initialize the Flask app
 app = Flask(__name__, template_folder='template')
 camera = cv2.VideoCapture(0)
-async def StartVideo(mode, ip):
-    task = asyncio.create_task(vst.Main_Run(mode, ip))
-    await task
 def gen_frames():  
     while True:
         success, frame = camera.read()  # read the camera frame
@@ -42,13 +39,13 @@ def video():
 
 
 @app.route('/index', methods=['post', 'get'])
-def idx():
+async def idx():
     message = ''
     if request.method == 'POST':
         user_IP = request.form.get('user_IP')
         vst.SetIp(user_IP)
         set_action = request.form.get('settings')
-        asyncio.run(StartVideo(set_action, user_IP))
+        await vst.Main_Run(set_action, user_IP)
         print(str(user_IP)+"; "+str(set_action))
     return render_template('index.html', message=message)
 

@@ -16,8 +16,6 @@ def load_images_from_folder(folder):
 model=keras.models.load_model('eye_state.h5')
 
 def picture_anal(img):
-  cv2.imshow("img",img)
-  cv2.waitKey(1)
   #make the dface and eyes detectors
   faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_alt.xml')
   eyeCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
@@ -44,6 +42,7 @@ def picture_anal(img):
     return 0
   for (x, y, w, h) in eyes:
     cv2.rectangle(img2, (x,y), (x+w, y+h), (0, 255, 0), 2)
+  cv2.imwrite('test_video/frame.jpg', img2)
   cv2.imshow('img2', img2)
   cv2.waitKey(1)
   eyeCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')

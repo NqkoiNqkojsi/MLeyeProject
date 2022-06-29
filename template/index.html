@@ -108,10 +108,12 @@
                     return new Promise(resolve => setTimeout(resolve, ms));
                 }
 
-                obj={"state":[1,1,1,1,1,1,1,1], "isAsleep":false, "ip":"192.168.1.10:5000", "mode":1, "img":""};
+                obj={"state":[1,1,1,1,1,1], "isAsleep":false, "ip":"192.168.1.10:5000", "mode":1, "img":""};
 
                 function ButtonPress() {
                     button=document.getElementById("Video");
+                    ip=document.getElementById("user_IP");
+                    mode=document.getElementById("Video");
                     if(button.innerHTML=="Start"){
                         button.classList.remove('button');
                         button.classList.add('button2');
@@ -152,7 +154,7 @@
                             success: function(data){
                                 console.log(data);
                                 obj=data;
-                                $("#VideoElement").attr("src", "data:image/png;base64,"+obj["img"]);
+                                $("#VideoElement").attr("src", "data:image/jpeg;base64,"+obj["img"]);
                             },
                             error: function(errMsg) {
                                 alert(errMsg);

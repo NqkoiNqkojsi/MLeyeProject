@@ -5,13 +5,23 @@ import FaceTest as fc
 import time
 import requests
 import base64
+import PIL.Image
+import os
+import io
+
  
 ip="192.168.1.10:5000"
  
 def Stream():
     # define a video capture object
-    vid = cv2.VideoCapture(0)
+    vid = cv2.VideoCapture("test_img/todor.jpg")
     ret, frame = vid.read()
+    base64_bytes = base64.b64encode(frame)
+    print(type(base64_bytes))
+    ENCODING = 'utf-8'
+    # third: decode these bytes to text
+    # result: string (in utf-8)
+    base64_string = base64_bytes.decode(ENCODING)
     return fc.picture_anal(frame)
  
  
@@ -29,26 +39,25 @@ def Main_Run(mode, ip):
     isAsleep=False
     isActive=True
     iter=0
-    state=[1,1,1,1,1,1,1,1]
+    state=[1,1,1,1,1,1]
     while(True):
-        for x in range(0, 7):
+        for x in range(0, 5):
             state[x]=state[x+1]
-        state[7]=Stream()
+        state[5]=Stream()
         print(state)
-        if isAsleep==True and state[7]==1:
-            state=[0,0,0,1,1,1,1,1]
+        if isAsleep==True and state[5]==1:
+            state=[0,0,1,1,1,1]
             isAsleep=False
-        if state.count(0)>4:
+        if state.count(0)>2:
             isAsleep=True
             try:
                 if mode==0:
                     r = requests.get(str("http://"+ip+"/taze"), auth=('user', 'pass'))
                 else:
                     r = requests.get(str("http://"+ip+"/vibrate"), auth=('user', 'pass'))
-                time.sleep(1)
             except:
-                
-                return
+                pass
+        time.sleep(1)
  
 def Test_run(mode):
     isActive=True
@@ -72,16 +81,21 @@ class PackageState:
         self.ip=ip
         self.mode=mode
     img=cv2.imread('test_img/empty.jpg')
-    ENCODING = 'utf-8'
+    
 
     def MakeImageJson(self):
-        
-        base64_bytes = base64.b64encode(self.img)
-
-        # third: decode these bytes to text
-        # result: string (in utf-8)
-        base64_string = base64_bytes.decode(self.ENCODING)
-        return base64_string
+        file='test_video/frame.jpg'
+        to_send=PIL.Image.open(file)
+        with io.BytesIO() as buf:
+            to_send.save(buf, 'jpeg')
+            image_bytes = buf.getvalue()
+            base64_bytes = base64.b64encode(image_bytes)
+            ENCODING = 'utf-8'
+            # third: decode these bytes to text
+            # result: string (in utf-8)
+            base64_string = base64_bytes.decode(ENCODING)
+            os.remove(file)
+            return base64_string
 
     def ReturnDic(self):
         return {
@@ -97,24 +111,22 @@ class PackageState:
 
 def Site_Oriented(pack):
     print("ip="+pack.ip)
-    for x in range(0, 7):
+    for x in range(0, 5):
         pack.state[x]=pack.state[x+1]
-    pack.state[7]=fc.picture_anal(pack.img)
+    pack.state[5]=fc.picture_anal(pack.img)
     print(pack.state)
-    if pack.isAsleep==True and pack.state[7]==1:
-        pack.state=[0,0,0,1,1,1,1,1]
+    if pack.isAsleep==True and pack.state[5]==1:
+        pack.state=[0,0,1,1,1,1]
         pack.isAsleep=False
         return pack.state
-    if pack.state.count(0)>4:
+    if pack.state.count(0)>2:
         pack.isAsleep=True
         try:
             if pack.mode==0:
                 r = requests.get(str("http://"+pack.ip+"/taze"), auth=('user', 'pass'))
             else:
-                r = requests.get(str("http://"+pack.ip+"/vibrate"), auth=('user', 'pass'))
-            #time.sleep(1)
+                r = requests.get(str("http://"+pack.ip+"/vibrate"), auth=('user', 'pass'))    
         except:
-            #time.sleep(1) 
             pass
     return pack 
         

@@ -161,19 +161,21 @@
                             dataType: "json",
                             success: function(data){
                                 console.log(data);
-                                obj=data;
-                                $("#VideoElement").attr("src", "data:image/jpeg;base64,"+obj["img"]);
-                                if(obj["isAsleep"]){
-                                    $("#containerLiveFeed").css('border-color', '#732222');
-                                }else{
-                                    $("#containerLiveFeed").css('border-color', '#227338');
+                                if(button.innerHTML=="Stop"){
+                                    obj=data;
+                                    $("#VideoElement").attr("src", "data:image/jpeg;base64,"+obj["img"]);
+                                    if(obj["isAsleep"]){
+                                        $("#containerLiveFeed").css('border-color', '#732222');
+                                    }else{
+                                        $("#containerLiveFeed").css('border-color', '#227338');
+                                    }
                                 }
                             },
                             error: function(errMsg) {
                                 alert(errMsg);
                             }
                         });
-                        await sleep(2*1000)
+                        await sleep(1*1000)
                     }
                 }   
             </script>

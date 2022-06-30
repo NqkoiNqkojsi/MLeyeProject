@@ -84,7 +84,7 @@ class PackageState:
     
 
     def MakeImageJson(self):
-        file='test_video/frame.jpg'
+        file='test_video/frame1.jpg'
         to_send=PIL.Image.open(file)
         with io.BytesIO() as buf:
             to_send.save(buf, 'jpeg')
@@ -94,7 +94,6 @@ class PackageState:
             # third: decode these bytes to text
             # result: string (in utf-8)
             base64_string = base64_bytes.decode(ENCODING)
-            os.remove(file)
             return base64_string
 
     def ReturnDic(self):

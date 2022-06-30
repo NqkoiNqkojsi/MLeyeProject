@@ -25,7 +25,7 @@ def gen_frames(pack):
                 b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
 
 def ReturnInfo(pack): 
-    vid = cv2.VideoCapture("test_img/todor.jpg")
+    vid = cv2.VideoCapture(0)
     ret, frame = vid.read()  # read the camera frame
     pack.img=frame
     return vst.Site_Oriented(pack)

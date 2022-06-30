@@ -42,7 +42,7 @@ def picture_anal(img):
     return 0
   for (x, y, w, h) in eyes:
     cv2.rectangle(img2, (x,y), (x+w, y+h), (0, 255, 0), 2)
-  cv2.imwrite('test_video/frame.jpg', img2)
+  cv2.imwrite('test_video/frame1.jpg', img2)
   cv2.imshow('img2', img2)
   cv2.waitKey(1)
   eyeCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')

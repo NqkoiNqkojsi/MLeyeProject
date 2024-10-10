@@ -28,7 +28,7 @@ def ReturnInfo(pack):
     vid = cv2.VideoCapture(0)
     ret, frame = vid.read()  # read the camera frame
     pack.img=frame
-    return vst.Site_Oriented(pack)
+    return vst.streamToSite(pack)
         
 
 @app.route('/')

@@ -108,7 +108,7 @@ class PackageState:
     
 
 
-def Site_Oriented(pack):
+def streamToSite(pack):
     print("ip="+pack.ip)
     for x in range(0, 5):
         pack.state[x]=pack.state[x+1]

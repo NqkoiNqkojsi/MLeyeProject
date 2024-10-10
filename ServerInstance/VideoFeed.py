@@ -1,7 +1,7 @@
 # import the opencv library
 import asyncio
 import cv2
-import FaceTest as fc
+import FaceTest as face
 import time
 import requests
 import base64
@@ -11,7 +11,7 @@ import io
 
  
 ip="192.168.1.10:5000"
- 
+faceClassifier=face.FaceTest()
 def Stream():
     # define a video capture object
     vid = cv2.VideoCapture("test_img/todor.jpg")
@@ -22,7 +22,7 @@ def Stream():
     # third: decode these bytes to text
     # result: string (in utf-8)
     base64_string = base64_bytes.decode(ENCODING)
-    return fc.picture_anal(frame)
+    return faceClassifier.picture_anal(frame)
  
  
 def Setup():
@@ -66,7 +66,7 @@ def Test_run(mode):
     while(isActive):
         for x in range(0, 10):
             state[x]=state[x+1]
-        state[10]=fc.picture_anal(cv2.imread('test_img/stelyo2.jpg'))
+        state[10]=faceClassifier.picture_anal(cv2.imread('test_img/stelyo2.jpg'))
         if state.count(0)>7:
             if mode==0:
                 r = requests.get(str("http://"+ip+"/taze"), auth=('user', 'pass'))
@@ -108,11 +108,11 @@ class PackageState:
     
 
 
-def Site_Oriented(pack):
+def streamToSite(pack):
     print("ip="+pack.ip)
     for x in range(0, 5):
         pack.state[x]=pack.state[x+1]
-    pack.state[5]=fc.picture_anal(pack.img)
+    pack.state[5]=faceClassifier.picture_anal(pack.img)
     print(pack.state)
     if pack.isAsleep==True and pack.state[5]==1:
         pack.state=[0,0,1,1,1,1]

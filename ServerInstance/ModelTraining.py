@@ -101,4 +101,4 @@ for x in range(0, 5):
     print("predicted label is " +str(y_pred))
     plt.show()
 
-TestFace(model)
+#TestFace(model)

@@ -1,5 +1,5 @@
 import tkinter
-import video_streaming as vst
+from .ServerInstance import video_streaming as vst
 vst.Setup()
 label1="Start"
 m = tkinter.Tk()
